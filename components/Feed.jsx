@@ -3,13 +3,18 @@
 import { useState, useEffect } from "react";
 
 import PromptCard from "./PromptCard";
+import { useDebounce } from "use-debounce";
+import { useRouter } from "next/navigation";
 
 const Feed = () => {
   const [searchText, setSearchText] = useState('');
+  const [query] = useDebounce(searchText, 500);
   const [prompts, setPrompts] = useState([]);
 
+  const router = useRouter();
+
   const handleSearchChange = (e) => {
-    
+    setSearchText(e.target.value);
   }
 
   const PromptCardList = ({ data, handleTagClick }) => {
@@ -26,7 +31,7 @@ const Feed = () => {
 
   useEffect(() => {
     const fetchPrompts = async () => {
-      const response = await fetch('/api/prompt');
+      const response = await fetch(`/api/prompt`);
       const data = await response.json();
 
       setPrompts(data);
@@ -35,10 +40,21 @@ const Feed = () => {
     fetchPrompts();
   }, [])
 
+  useEffect(() => {
+    const fetchPrompts = async () => {
+      const response = await fetch(`/api/prompt/?search=${query}`);
+      const data = await response.json();
+
+      setPrompts(data);
+    }
+
+    fetchPrompts();
+  }, [query])
+
   return (
     <section className="feed">
       <form className="relative w-full flex-center">
-        <input type='text' placeholder="Search for a tag or a username" value={searchText} onChange={handleSearchChange} required className="search_input peer"/>
+        <input type='text' placeholder="Search for a tag" value={searchText} onChange={handleSearchChange} required className="search_input peer"/>
       </form>
 
       <PromptCardList data={prompts} handleTagClick={() => {}}/>

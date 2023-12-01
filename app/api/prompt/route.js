@@ -5,7 +5,16 @@ export const GET = async (request) => {
     try {
         await connectToDB();
 
-        const prompts = await Prompt.find({}).populate('creator');
+        const searchQuery = request.nextUrl.searchParams.get('search');
+
+        let prompts;
+        if (!searchQuery) {
+            prompts = await Prompt.find({}).populate('creator');
+        } else {
+            const regex = new RegExp(searchQuery, 'i');
+
+            prompts = await Prompt.find({tag: regex}).populate('creator');
+        }
 
         return new Response(JSON.stringify(prompts), { status: 200 });
     } catch (error) {
