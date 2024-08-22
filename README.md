@@ -1,5 +1,6 @@
 # Promptopia
-Website : https://promptopia-nextjs-hasin-riki.vercel.app/
+Website: [https://promptopia-nextjs-hasin-riki.vercel.app/](https://promptopia-nextjs-hasin-riki.vercel.app/)
+
 A practice project by JavaScript Mastery.
 
 ## Features
